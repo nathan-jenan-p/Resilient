@@ -1,0 +1,412 @@
+{
+    "results": [
+        {
+            "type_id": "incident",
+            "org_id": 220,
+            "obj_id": 2169,
+            "obj_name": "Web Comp 1",
+            "obj_owner_id": 53,
+            "obj_creator_id": 53,
+            "obj_state": "A",
+            "obj_create_date": 1524768562000,
+            "inc_id": 2169,
+            "inc_name": "Web Comp 1",
+            "inc_owner_id": 53,
+            "task_id": null,
+            "task_name": null,
+            "match_field_name": "Address",
+            "match_field_value": "<ResilientHighlight>99.199.199.199</ResilientHighlight>",
+            "score": 0.9228297,
+            "result": {
+                "perms": {
+                    "read": true,
+                    "write": true,
+                    "comment": true,
+                    "assign": true,
+                    "close": true,
+                    "change_members": true,
+                    "attach_file": true,
+                    "read_attachments": true,
+                    "delete_attachments": true,
+                    "create_milestones": true,
+                    "list_milestones": true,
+                    "create_artifacts": true,
+                    "list_artifacts": true,
+                    "delete": true,
+                    "change_workspace": true
+                },
+                "confirmed": true,
+                "assessment": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<assessment>\n    <rollups>\n        <rollup>\n            <rollups>\n                <rollup label=\"Under federal regulatory requirements\">\n                    <rollups>\n                        <rollup>\n                            <tasks>\n                                <task>Notify 1 federal commission of your exposure</task>\n                            </tasks>\n                        </rollup>\n                    </rollups>\n                    <tasks/>\n                </rollup>\n                <rollup label=\"Under jurisdictional regulatory requirements\">\n                    <rollups>\n                        <rollup>\n                            <tasks>\n                                <task>Notify 1 special office in 1 jurisdiction</task>\n                            </tasks>\n                        </rollup>\n                    </rollups>\n                    <tasks/>\n                </rollup>\n            </rollups>\n            <tasks/>\n        </rollup>\n    </rollups>\n    <optional></optional>\n</assessment>\n",
+                "draft": false,
+                "id": 2169,
+                "name": "Web Comp 1",
+                "description": {
+                    "format": "text",
+                    "content": "Error handling feature resulted in attacker ability to post remote code \nexecuted as a cmd shell that have OS cmd to attacker via subsequent \nmodified web requests."
+                },
+                "phase_id": {
+                    "name": "Detect/Analyze",
+                    "id": 1149
+                },
+                "inc_training": false,
+                "vers": 9,
+                "addr": "99.199.199.199",
+                "city": "Pont Rouge",
+                "creator": {
+                    "id": 53,
+                    "fname": "Joseph",
+                    "lname": "Rivela",
+                    "status": "A",
+                    "email": "joe@polarity.io",
+                    "phone": "8457011442",
+                    "cell": "8457011442",
+                    "title": "Strategy",
+                    "last_login": 1524766896047,
+                    "locked": false,
+                    "is_external": false
+                },
+                "exposure_type_id": {
+                    "name": "Unknown",
+                    "id": 1
+                },
+                "incident_type_ids": [
+                    {
+                        "name": "Malware",
+                        "id": 19
+                    }
+                ],
+                "reporter": "N/A",
+                "state": null,
+                "country": {
+                    "name": "Canada",
+                    "id": 1001
+                },
+                "zip": null,
+                "workspace": {
+                    "name": "Default workspace",
+                    "id": 20
+                },
+                "exposure": 0,
+                "members": [
+                    {
+                        "name": "joem@polarity.io",
+                        "id": 52
+                    }
+                ],
+                "negative_pr_likely": null,
+                "task_changes": {
+                    "added": [],
+                    "removed": []
+                },
+                "data_compromised": true,
+                "properties": {},
+                "resolution_id": null,
+                "resolution_summary": null,
+                "pii": {
+                    "assessment": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<assessment>\n    <rollups>\n        <rollup>\n            <rollups>\n                <rollup label=\"Under federal regulatory requirements\">\n                    <rollups>\n                        <rollup>\n                            <tasks>\n                                <task>Notify 1 federal commission of your exposure</task>\n                            </tasks>\n                        </rollup>\n                    </rollups>\n                    <tasks/>\n                </rollup>\n                <rollup label=\"Under jurisdictional regulatory requirements\">\n                    <rollups>\n                        <rollup>\n                            <tasks>\n                                <task>Notify 1 special office in 1 jurisdiction</task>\n                            </tasks>\n                        </rollup>\n                    </rollups>\n                    <tasks/>\n                </rollup>\n            </rollups>\n            <tasks/>\n        </rollup>\n    </rollups>\n    <optional></optional>\n</assessment>\n",
+                    "exposure": 0,
+                    "data_compromised": true,
+                    "harmstatus_id": {
+                        "name": "Yes",
+                        "id": 3
+                    },
+                    "data_encrypted": false,
+                    "data_contained": true,
+                    "impact_likely": null,
+                    "data_source_ids": [
+                        {
+                            "name": "Crown Jewels DB",
+                            "id": 2529
+                        }
+                    ],
+                    "data_format": {
+                        "name": "Electronic",
+                        "id": 0
+                    },
+                    "gdpr_harm_risk": null,
+                    "gdpr_lawful_data_processing_categories": []
+                },
+                "admin_id": null,
+                "creator_id": {
+                    "name": "joe@polarity.io",
+                    "id": 53
+                },
+                "crimestatus_id": {
+                    "name": "Yes",
+                    "id": 2
+                },
+                "employee_involved": null,
+                "end_date": null,
+                "exposure_dept_id": null,
+                "exposure_individual_name": null,
+                "exposure_vendor_id": null,
+                "jurisdiction_name": "RCMP",
+                "jurisdiction_reg_id": null,
+                "start_date": 1524715200000,
+                "inc_start": 1524715200000,
+                "org_id": 220,
+                "is_scenario": false,
+                "hard_liability": 0,
+                "nist_attack_vectors": [
+                    {
+                        "name": "Web",
+                        "id": 3
+                    }
+                ],
+                "discovered_date": 1524768121000,
+                "due_date": 1524974400000,
+                "create_date": 1524768562000,
+                "owner_id": {
+                    "name": "joe@polarity.io",
+                    "id": 53
+                },
+                "severity_code": {
+                    "name": "High",
+                    "id": 2552
+                },
+                "plan_status": "A"
+            }
+        }
+    ]
+}
+
+{
+    "results": [
+        {
+            "type_id": "note",
+            "org_id": 220,
+            "obj_id": 221,
+            "obj_creator_id": 52,
+            "obj_create_date": 1531233610914,
+            "inc_id": 2411,
+            "inc_name": "Brutus",
+            "inc_owner_id": 52,
+            "task_id": null,
+            "task_name": null,
+            "match_field_name": "Text",
+            "match_field_value": "<ResilientHighlight>FD904ADDBDFE548C22FFA5223ED9EEE7</ResilientHighlight>",
+            "score": 7.4746785,
+            "result": {
+                "type": "incident",
+                "id": 221,
+                "parent_id": null,
+                "user_id": {
+                    "name": "joem@polarity.io",
+                    "id": 52
+                },
+                "user_fname": "Joseph",
+                "user_lname": "Miller",
+                "text": {
+                    "format": "text",
+                    "content": "FD904ADDBDFE548C22FFA5223ED9EEE7"
+                },
+                "create_date": 1531233610914,
+                "modify_date": null,
+                "children": [],
+                "mentioned_users": [],
+                "is_deleted": false,
+                "modify_user": null,
+                "actions": [],
+                "inc_id": 2411,
+                "inc_name": "Brutus",
+                "task_id": null,
+                "task_name": null,
+                "task_custom": null,
+                "task_members": null,
+                "task_at_id": null,
+                "inc_owner": {
+                    "name": "joem@polarity.io",
+                    "id": 52
+                },
+                "user_name": "Joseph Miller",
+                "modify_principal": null,
+                "comment_perms": null
+            }
+        },
+        {
+            "type_id": "incident",
+            "org_id": 220,
+            "obj_id": 2411,
+            "obj_name": "Brutus",
+            "obj_owner_id": 52,
+            "obj_creator_id": 52,
+            "obj_state": "A",
+            "obj_create_date": 1531233027000,
+            "inc_id": 2411,
+            "inc_name": "Brutus",
+            "inc_owner_id": 52,
+            "task_id": null,
+            "task_name": null,
+            "match_field_name": "Resolution Summary",
+            "match_field_value": "<ResilientHighlight>FD904ADDBDFE548C22FFA5223ED9EEE7</ResilientHighlight>",
+            "score": 1.0789121,
+            "result": {
+                "name": "Brutus",
+                "description": {
+                    "format": "text",
+                    "content": "Brute force attack "
+                },
+                "phase_id": {
+                    "name": "Detect/Analyze",
+                    "id": 1149
+                },
+                "inc_training": false,
+                "vers": 5,
+                "addr": "6 S. Ridge Road",
+                "city": "Farmington",
+                "creator": {
+                    "id": 52,
+                    "fname": "Joseph",
+                    "lname": "Miller",
+                    "status": "A",
+                    "email": "joem@polarity.io",
+                    "phone": "2696215088",
+                    "cell": "2696215088",
+                    "title": "Product Manager",
+                    "last_login": 1531233543869,
+                    "locked": false,
+                    "is_external": false
+                },
+                "exposure_type_id": {
+                    "name": "Individual",
+                    "id": 3
+                },
+                "incident_type_ids": [
+                    {
+                        "name": "Malware",
+                        "id": 19
+                    }
+                ],
+                "reporter": "Joseph Miller",
+                "state": {
+                    "name": "Connecticut",
+                    "id": 8
+                },
+                "country": {
+                    "name": "United States",
+                    "id": 1000
+                },
+                "zip": "06032",
+                "workspace": {
+                    "name": "Default workspace",
+                    "id": 20
+                },
+                "exposure": 0,
+                "members": [],
+                "negative_pr_likely": true,
+                "perms": {
+                    "read": true,
+                    "write": true,
+                    "comment": true,
+                    "assign": true,
+                    "close": true,
+                    "change_members": true,
+                    "attach_file": true,
+                    "read_attachments": true,
+                    "delete_attachments": true,
+                    "create_milestones": true,
+                    "list_milestones": true,
+                    "create_artifacts": true,
+                    "list_artifacts": true,
+                    "delete": true,
+                    "change_workspace": true
+                },
+                "confirmed": false,
+                "task_changes": {
+                    "added": [],
+                    "removed": []
+                },
+                "assessment": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<assessment>\n    <rollups/>\n    <optional>There are 2 required and 0 optional tasks from 1 regulators.</optional>\n</assessment>\n",
+                "data_compromised": true,
+                "draft": false,
+                "properties": {},
+                "resolution_id": {
+                    "name": "Unresolved",
+                    "id": 2553
+                },
+                "resolution_summary": {
+                    "format": "text",
+                    "content": "FD904ADDBDFE548C22FFA5223ED9EEE7"
+                },
+                "pii": {
+                    "data_compromised": true,
+                    "harmstatus_id": {
+                        "name": "Yes",
+                        "id": 3
+                    },
+                    "data_encrypted": true,
+                    "data_contained": true,
+                    "impact_likely": null,
+                    "data_source_ids": [
+                        {
+                            "name": "Crown Jewels DB",
+                            "id": 2529
+                        }
+                    ],
+                    "data_format": {
+                        "name": "Electronic",
+                        "id": 0
+                    },
+                    "assessment": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<assessment>\n    <rollups/>\n    <optional>There are 2 required and 0 optional tasks from 1 regulators.</optional>\n</assessment>\n",
+                    "exposure": 0,
+                    "gdpr_harm_risk": null,
+                    "gdpr_lawful_data_processing_categories": []
+                },
+                "gdpr": {
+                    "gdpr_breach_circumstances": [],
+                    "gdpr_breach_type": null,
+                    "gdpr_personal_data": null,
+                    "gdpr_identification": null,
+                    "gdpr_consequences": null,
+                    "gdpr_final_assessment": null,
+                    "gdpr_breach_type_comment": null,
+                    "gdpr_personal_data_comment": null,
+                    "gdpr_identification_comment": null,
+                    "gdpr_consequences_comment": null,
+                    "gdpr_final_assessment_comment": null,
+                    "gdpr_subsequent_notification": null
+                },
+                "admin_id": null,
+                "creator_id": {
+                    "name": "joem@polarity.io",
+                    "id": 52
+                },
+                "crimestatus_id": {
+                    "name": "Yes - Freeze Tasks",
+                    "id": 3
+                },
+                "employee_involved": false,
+                "end_date": null,
+                "exposure_dept_id": null,
+                "exposure_individual_name": null,
+                "exposure_vendor_id": null,
+                "jurisdiction_name": null,
+                "jurisdiction_reg_id": null,
+                "start_date": 1530417600000,
+                "inc_start": 1530417600000,
+                "org_id": 220,
+                "is_scenario": false,
+                "hard_liability": 0,
+                "nist_attack_vectors": [
+                    {
+                        "name": "Attrition (Denial-of-Service and Brute-Force Attacks)",
+                        "id": 2
+                    }
+                ],
+                "id": 2411,
+                "discovered_date": 1531229985000,
+                "due_date": 1531402785000,
+                "create_date": 1531233027000,
+                "owner_id": {
+                    "name": "joem@polarity.io",
+                    "id": 52
+                },
+                "severity_code": {
+                    "name": "High",
+                    "id": 2552
+                },
+                "plan_status": "A"
+            }
+        }
+    ]
+}

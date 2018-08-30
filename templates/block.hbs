@@ -1,0 +1,217 @@
+
+{{#each details.body.results as |result|}}
+  <div>
+    <a class="p-link" href="{{details.host}}/#incidents/{{result.obj_id}}"> View Incident in Resilient </a>
+  </div>
+ {{#if result.type_id}}
+    <div>
+       <span class="p-key"> Type: </span>
+       <span class="p-value">{{result.type_id}}</span>
+    </div>
+  {{/if}}
+
+  {{#if result.inc_name}}
+     <div>
+        <span class="p-key"> Name of Incident: </span>
+        <span class="p-value">{{result.inc_name}}</span>
+     </div>
+   {{/if}}
+
+   {{#if result.result.is_scenario}}
+      <div>
+         <span class="p-key"> Scenario: </span>
+         <span class="p-value">{{result.result.is_scenario}}</span>
+      </div>
+    {{/if}}
+
+    {{#if result.result.severity_code.name}}
+       <div>
+          <span class="p-key"> Severity: </span>
+          <span class="p-value">{{result.result.severity_code.name}}</span>
+       </div>
+     {{/if}}
+
+   {{#if result.score}}
+      <div>
+         <span class="p-key"> Incident Score: </span>
+         <span class="p-value">{{result.score}}</span>
+      </div>
+    {{/if}}
+
+   {{#if result.obj_create_date}}
+      <div>
+         <span class="p-key"> Created Date: </span>
+         <span class="p-value">{{moment-time result.obj_create_date}}</span>
+      </div>
+    {{/if}}
+
+    {{#if result.result.discovered_date}}
+       <div>
+          <span class="p-key"> Date Discovered: </span>
+          <span class="p-value">{{moment-time result.result.discovered_date}}</span>
+       </div>
+     {{/if}}
+
+     {{#if result.result.due_date}}
+        <div>
+           <span class="p-key"> Date Due: </span>
+           <span class="p-value">{{moment-time result.result.due_date}}</span>
+        </div>
+      {{/if}}
+
+    {{#if result.match_field_name}}
+       <div>
+          <span class="p-key"> Field Matched: </span>
+          <span class="p-value">{{result.match_field_name}}</span>
+       </div>
+     {{/if}}
+
+     {{#if result.result.description.content}}
+        <div>
+           <span class="p-key"> Description </span>
+           <span class="p-value">{{result.result.description.content}}</span>
+        </div>
+      {{/if}}
+
+      {{#if result.result.phase_id.name}}
+         <div>
+            <span class="p-key"> Phase Name: </span>
+            <span class="p-value">{{result.result.phase_id.name}}</span>
+         </div>
+       {{/if}}
+
+      {{#if result.result.add}}
+         <div>
+            <span class="p-key"> Address: </span>
+            <span class="p-value">{{result.result.add}}</span>
+         </div>
+       {{/if}}
+
+       {{#if result.result.city}}
+          <div>
+             <span class="p-key"> City: </span>
+             <span class="p-value">{{result.result.city}}</span>
+          </div>
+        {{/if}}
+
+        {{#if result.result.exposure_type_id.name}}
+           <div>
+              <span class="p-key"> Exposure Type: </span>
+              <span class="p-value">{{result.result.exposure_type_id.name}}</span>
+           </div>
+         {{/if}}
+
+        {{#if result.result.user_fname}}
+           <div>
+              <span class="p-key"> Creator Name: </span>
+              <span class="p-value">{{result.result.user_fname}} {{result.result.user_lname}}</span>
+           </div>
+         {{/if}}
+
+        {{#if result.result.creator.email}}
+           <div>
+              <span class="p-key"> Creator Email: </span>
+              <span class="p-value">{{result.result.creator.email}}</span>
+           </div>
+         {{/if}}
+
+         {{#if result.result.nist_attack_vectors.name}}
+            <div>
+               <span class="p-key"> Attack Vectors: </span>
+               <span class="p-value">{{result.result.nist_attack_vectors.name}}</span>
+            </div>
+          {{/if}}
+
+         {{#if result.result.mentioned_users}}
+        <div>
+            {{#each result.result.mentioned_users as |data|}}
+            <i class = "fa fa-info-circle #ADADAD"></i><span class = "p-key"> Users in Incident: </span>
+                <ul>
+                  <li><span class = "p-value">{{data}}</span></li>
+              </ul>
+            {{/each}}
+        </div>
+          {{/if}}
+
+          {{#if result.result.actions}}
+         <div>
+             {{#each result.result.actions as |data|}}
+             <i class = "fa fa-info-circle #ADADAD"></i><span class = "p-key"> Actions Needed: </span>
+                 <ul>
+                   <li><span class = "p-value">{{data}}</span></li>
+               </ul>
+             {{/each}}
+         </div>
+           {{/if}}
+
+     {{#if result.result.incident_type_ids}}
+    <div>
+        {{#each result.result.incident_type_ids as |data|}}
+        <i class = "fa fa-info-circle #ADADAD"></i><span class = "p-key"> Incident Types: </span>
+            <ul>
+              <li><span class = "p-value">{{data.name}}</span></li>
+          </ul>
+        {{/each}}
+    </div>
+      {{/if}}
+
+
+      {{#if result.result.pii.data_compromised}}
+         <div>
+            <span class="p-key"> PII Data Compromised: </span>
+            <span class="p-value">{{result.result.pii.data_compromised}}</span>
+         </div>
+       {{/if}}
+
+       {{#if result.result.pii.data_encrypted}}
+          <div>
+             <span class="p-key"> PII Data Encrypted: </span>
+             <span class="p-value">{{result.result.pii.data_encrypted}}</span>
+          </div>
+        {{/if}}
+
+        {{#if result.result.pii.data_contained}}
+           <div>
+              <span class="p-key"> PII Data Contained: </span>
+              <span class="p-value">{{result.result.pii.data_contained}}</span>
+           </div>
+         {{/if}}
+
+         {{#if result.result.pii.impact_likely}}
+            <div>
+               <span class="p-key"> PII Impact: </span>
+               <span class="p-value">{{result.result.pii.impact_likely}}</span>
+            </div>
+          {{/if}}
+
+      {{#if result.result.pii.data_source_ids}}
+     <div>
+         {{#each result.result.pii.data_source_ids as |data|}}
+         <i class = "fa fa-info-circle #ADADAD"></i><span class = "p-key"> PII Data Sources: </span> <span class = "p-value">{{data.departmentName}}</span>
+             <ul>
+               <li><span class = "p-value">{{data.name}}</span></li>
+           </ul>
+         {{/each}}
+     </div>
+       {{/if}}
+
+       {{#if result.result.pii.exposure}}
+          <div>
+             <span class="p-key"> PII Exposure Level: </span>
+             <span class="p-value">{{result.result.pii.exposure}}</span>
+          </div>
+        {{/if}}
+
+        {{#if result.result.crimestatus_id.name}}
+           <div>
+              <span class="p-key"> Crime Status: </span>
+              <span class="p-value">{{result.result.crimestatus_id.name}}</span>
+           </div>
+         {{/if}}
+
+  <form {{action "submitData"}}>
+    Notes on Incident:<br>
+    <input type="text"><br>
+    <input type="submit" value="Submit">
+    </form
+{{/each}}
