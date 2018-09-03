@@ -41,7 +41,7 @@ function startSync(USERNAME, PASSWORD) {
             username: config.username ? config.username : USERNAME,
             password: config.password ? config.password : PASSWORD,
             host: config.host ? config.host : 'dev.polarity',
-            path: '/app/polarity-server/integrations/vulndb/' + Path.dirname(filename)
+            path: '/app/polarity-server/integrations/Resilient/' + Path.dirname(filename)
         }, (err) => {
             if (err) {
                 console.error('Failed to sync change for ' + filename + ', error was: ' + err);

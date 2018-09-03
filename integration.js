@@ -39,8 +39,8 @@ function startup(logger) {
     }
 
     if (typeof config.request.rejectUnauthorized === 'boolean') {
-    defaults.rejectUnauthorized = config.request.rejectUnauthorized;
-  }
+        defaults.rejectUnauthorized = config.request.rejectUnauthorized;
+    }
 
     requestWithDefaults = request.defaults(defaults);
 }
@@ -53,46 +53,40 @@ function startup(logger) {
  * @param cb
  */
 
- var createToken = function(options, cb) {
+var createToken = function (options, cb) {
+    let requestOptions = {
+        uri: options.url + '/rest/session',
+        method: 'POST',
+        body: {
+            "email": options.username,
+            "password": options.password,
+            "interactive": true
+        },
+        json: true
+    };
 
-     let requestOptions = {
-         uri: options.url + '/rest/session',
-         method: 'POST',
-         body: {
-             "email": options.username,
-             "password": options.password,
-             "interactive": true
-         },
-         json: true,
-         jar: true
-     };
+    Logger.trace({ request: requestOptions }, "Checking the request options for auth token");
 
-     Logger.trace({request: requestOptions}, "Checking the request options for auth token");
+    requestWithDefaults(requestOptions, function (err, response, body) {
+        let errorObject = _isApiError(err, response, body);
+        Logger.trace({ error: errorObject }, "Checking to see if there is an error in request");
+        if (errorObject) {
+            cb(errorObject);
+            return;
+        }
 
-     requestWithDefaults(requestOptions, function (err, response, body) {
-         let errorObject = _isApiError(err, response, body);
-         Logger.trace({error: errorObject}, "Checking to see if there is an error in request");
-         if (errorObject) {
-             cb(errorObject);
-             return;
-         }
+        let csrfToken = body.csrf_token;
 
-         Logger.trace({body: body}, "Body in auth token");
-
-         let csrfToken = body.csrf_token;
-
-         Logger.trace({auth: csrfToken}, "AuthToken Catch");
-
-         cb(null, csrfToken);
-     });
- };
+        cb(null, {token: csrfToken, cookies:  response.headers['set-cookie']});
+    });
+};
 
 function doLookup(entities, options, cb) {
 
-    Logger.debug({options: options}, 'Options');
+    Logger.debug({ options: options }, 'Options');
     let lookupResults = [];
 
-    createToken (options, function (err, token) {
+    createToken(options, function (err, token) {
         if (err) {
             cb({
                 detail: "Error Creating Session",
@@ -100,71 +94,68 @@ function doLookup(entities, options, cb) {
             });
             destroyToken(options, token);
             return;
-      }else{
-        async.each(entities, function (entityObj, next) {
-          if (entityObj.value !== null) {
-                  _lookupEntity(entityObj, options, token, function (err, result) {
-                    if (err) {
-                        next(err);
-                    } else {
-                        Logger.debug({results: result}, "Logging results");
-                        lookupResults.push(result);
-                        next(null);
-                    }
-                });
-          }else {
-                lookupResults.push({entity: entityObj, data: null}); //Cache the missed results
-                next(null);
-            }
-          }, function(err) {
-            destroyToken(options, token);
-            Logger.debug({lookup: lookupResults}, "Checking to see if the results are making its way to lookupresults");
-            cb(err, lookupResults);
-      });
-    }
-});
+        } else {
+            async.each(entities, function (entityObj, next) {
+                if (entityObj.value !== null) {
+                    _lookupEntity(entityObj, options, token, function (err, result) {
+                        if (err) {
+                            next(err);
+                        } else {
+                            Logger.debug({ results: result }, "Logging results");
+                            lookupResults.push(result);
+                            next(null);
+                        }
+                    });
+                } else {
+                    lookupResults.push({ entity: entityObj, data: null }); //Cache the missed results
+                    next(null);
+                }
+            }, function (err) {
+                destroyToken(options, token);
+                Logger.debug({ lookup: lookupResults }, "Checking to see if the results are making its way to lookupresults");
+                cb(err, lookupResults);
+            });
+        }
+    });
 }
 
 
 
 function _lookupEntity(entityObj, options, token, cb) {
-
-
     let lookupResults = [];
     let host = options.url
 
     let requestOptions = {
         uri: options.url + '/rest/search_ex',
         method: 'POST',
-        headers: {'X-sess-id': token},
+        headers: { 'X-sess-id': token.token, 'Cookie': token.cookies },
         body: {
             "org_id": 220,
             "query": entityObj.value,
             "min_required_results": 0
         },
-        json: true,
-        jar: true
+        json: true
     };
 
-    Logger.trace({data: requestOptions}, "Logging requestOptions");
+    Logger.trace({ data: requestOptions }, "Logging requestOptions");
 
     requestWithDefaults(requestOptions, function (err, response, body) {
         let errorObject = _isApiError(err, response, body, entityObj.value);
-        Logger.trace({error: errorObject}, "Checking to see if there is an error in lookEntity request");
-        if (errorObject) {
-            cb(errorObject);
+        Logger.trace({ error: errorObject }, "Checking to see if there is an error in lookEntity request");
+        if (errorObject || response.statusCode !== 200) {
+            cb({err: errorObject, statusCode: response.statusCode});
             return;
         }
 
-      Logger.trace({resonse: response}, "Checking the reponse of the query");
-      Logger.trace({data: body}, "Logging Body Data of the sha256");
+        Logger.trace({ resonse: response }, "Checking the reponse of the query");
+        Logger.trace({ data: body }, "Logging Body Data of the sha256");
 
-        if (_.isNull(body)){
-          cb(null, {
-              entity: entityObj,
-              data: null
-          });
-          return;
+        if (!body || !body.results) {
+            cb(null, {
+                entity: entityObj,
+                data: null
+            });
+            return;
         }
 
         if (_isLookupMiss(response)) {
@@ -177,8 +168,8 @@ function _lookupEntity(entityObj, options, token, cb) {
 
         let incidents = [];
 
-        body.results.forEach(function(data){
-          incidents.push(data.obj_id);
+        body.results.forEach(function (data) {
+            incidents.push(data.obj_id);
         });
 
         // The lookup results returned is an array of lookup objects with the following format
@@ -191,9 +182,9 @@ function _lookupEntity(entityObj, options, token, cb) {
                 summary: [],
                 // Data that you want to pass back to the notification window details block
                 details: {
-                  body: body,
-                  host: host,
-                  incidents: incidents
+                    body: body,
+                    host: host,
+                    incidents: incidents
                 }
             }
         });
@@ -290,8 +281,48 @@ function validateOptions(userOptions, cb) {
     cb(null, errors);
 }
 
+function onMessage(payload, options, callback) {
+    Logger.trace('got options for post', {options: options});
+
+    createToken(options, function (err, token) {
+        if (err) {
+            destroyToken(options, token);
+            Logger.error('error getting token', { err: err });
+            callback({err: err});
+            return;
+        }
+
+        let data = payload.data;
+
+        let requestOptions = {
+            uri: `${options.url}/rest/orgs/${options.org_id}/incidents/${data.inc_id}/comments`,
+            method: 'POST',
+            headers: { 'X-sess-id': token.token, 'Cookie': token.cookies },
+            body: {
+                "text": data.note
+            },
+            json: true
+        };
+
+        Logger.trace({requestOptions: requestOptions});
+
+        requestWithDefaults(requestOptions, (err, resp, body) => {
+            if (err || resp.statusCode !== 200) {
+                destroyToken(options, token);
+                Logger.error('error posting note', { err: err, statusCode: resp.statusCode, requestOptions: requestOptions, payload: payload, body: body });
+                callback({ err: err, statusCode: resp.statusCode, body: body });
+                return;
+            }
+
+            destroyToken(options, token);
+            callback(null, {});
+        });
+    });
+}
+
 module.exports = {
     doLookup: doLookup,
     startup: startup,
+    onMessage: onMessage,
     validateOptions: validateOptions
 };

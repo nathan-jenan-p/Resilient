@@ -1,4 +1,3 @@
-
 {{#each details.body.results as |result|}}
   <div>
     <a class="p-link" href="{{details.host}}/#incidents/{{result.obj_id}}"> View Incident in Resilient </a>
@@ -209,9 +208,10 @@
            </div>
          {{/if}}
 
-  <form {{action "submitData"}}>
-    Notes on Incident:<br>
-    <input type="text"><br>
-    <input type="submit" value="Submit">
-    </form
+  <form {{action "submitData" result.obj_id on="submit"}}>
+    Notes on Incident:<br />
+    {{input type="text" value=note}}<br />
+    <button type="submit" disabled={{disabled}}>Submit</button>
+    {{message}}
+    </form>
 {{/each}}
