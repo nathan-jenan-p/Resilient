@@ -150,7 +150,7 @@ function _lookupEntity(entityObj, options, token, cb) {
         Logger.trace({ resonse: response }, "Checking the reponse of the query");
         Logger.trace({ data: body }, "Logging Body Data of the sha256");
 
-        if (!body || !body.results) {
+        if (!body || !body.results || body.results.length === 0) {
             cb(null, {
                 entity: entityObj,
                 data: null
