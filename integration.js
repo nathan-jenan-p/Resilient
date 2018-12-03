@@ -42,9 +42,35 @@ function startup(logger) {
         defaults.rejectUnauthorized = config.request.rejectUnauthorized;
     }
 
-    requestWithDefaults = request.defaults(defaults);
+    let defaultRequest = request.defaults(defaults);
+    requestWithDefaults = (options, requestOptions, cb) => {
+        defaultRequest(requestOptions, (err, resp, data) => {
+            if (err) {
+                cb(err, resp, data);
+                return;
+            }
+
+            if (resp.statusCode === 401) {
+                deleteToken(options);
+                createToken(options, (err, token) => {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
+
+                    requestOptions.headers = { 'X-sess-id': token.token, 'Cookie': token.cookies };
+
+                    defaultRequest(requestOptions, cb);
+                });
+                return;
+            }
+
+            cb(err, resp, data);
+        });
+    }
 }
 
+let tokens = {};
 
 /**
  *
@@ -53,32 +79,59 @@ function startup(logger) {
  * @param cb
  */
 
+function getTokenFromCache(options) {
+    return tokens[options.username + options.password];
+}
+
+function setTokenInCache(options, token) {
+    tokens[options.username + options.password] = token;
+}
+
+function deleteToken(options) {
+    delete tokens[options.username + options.password];
+}
+
+
 var createToken = function (options, cb) {
-    let requestOptions = {
-        uri: options.url + '/rest/session',
-        method: 'POST',
-        body: {
-            "email": options.username,
-            "password": options.password,
-            "interactive": true
-        },
-        json: true
-    };
+    let token = getTokenFromCache(options);
+    if (token) {
+        token.counter++;
+        cb(null, token);
+    } else {
+        let requestOptions = {
+            uri: options.url + '/rest/session',
+            method: 'POST',
+            body: {
+                "email": options.username,
+                "password": options.password,
+                "interactive": true
+            },
+            json: true
+        };
 
-    Logger.trace({ request: requestOptions }, "Checking the request options for auth token");
+        Logger.trace({ request: requestOptions }, "Checking the request options for auth token");
 
-    requestWithDefaults(requestOptions, function (err, response, body) {
-        let errorObject = _isApiError(err, response, body);
-        Logger.trace({ error: errorObject }, "Checking to see if there is an error in request");
-        if (errorObject) {
-            cb(errorObject);
-            return;
-        }
+        requestWithDefaults(options, requestOptions, function (err, response, body) {
+            let errorObject = _isApiError(err, response, body);
+            Logger.trace({ error: errorObject }, "Checking to see if there is an error in request");
+            if (errorObject) {
+                cb(errorObject);
+                return;
+            }
 
-        let csrfToken = body.csrf_token;
+            let csrfToken = body.csrf_token;
 
-        cb(null, {token: csrfToken, cookies:  response.headers['set-cookie']});
-    });
+            let token = {
+                token: csrfToken,
+                cookies: response.headers['set-cookie'],
+                counter: 1
+            };
+
+            setTokenInCache(options, token);
+
+            cb(null, token);
+        });
+    }
 };
 
 function doLookup(entities, options, cb) {
@@ -112,13 +165,12 @@ function doLookup(entities, options, cb) {
                 }
             }, function (err) {
                 destroyToken(options, token);
-                Logger.debug({ lookup: lookupResults }, "Checking to see if the results are making its way to lookupresults");
+                // Logger.debug({ lookup: lookupResults }, "Checking to see if the results are making its way to lookupresults");
                 cb(err, lookupResults);
             });
         }
     });
 }
-
 
 
 function _lookupEntity(entityObj, options, token, cb) {
@@ -132,18 +184,21 @@ function _lookupEntity(entityObj, options, token, cb) {
         body: {
             "org_id": 220,
             "query": entityObj.value,
-            "min_required_results": 0
+            "min_required_results": 0,
+            "types": [
+                "incident"
+            ]
         },
         json: true
     };
 
     Logger.trace({ data: requestOptions }, "Logging requestOptions");
 
-    requestWithDefaults(requestOptions, function (err, response, body) {
+    requestWithDefaults(options, requestOptions, function (err, response, body) {
         let errorObject = _isApiError(err, response, body, entityObj.value);
-        Logger.trace({ error: errorObject }, "Checking to see if there is an error in lookEntity request");
-        if (errorObject || response.statusCode !== 200) {
-            cb({err: errorObject, statusCode: response.statusCode});
+        // Logger.trace({ error: errorObject }, "Checking to see if there is an error in lookEntity request");
+        if (errorObject || (response && response.statusCode !== 200)) {
+            cb({ err: errorObject, statusCode: response ? response.statusCode : "unknown" });
             return;
         }
 
@@ -191,27 +246,40 @@ function _lookupEntity(entityObj, options, token, cb) {
     });
 }
 
-function destroyToken(options, token, cb) {
+function destroyToken(options, _, cb) {
+    let tokenHolder = getTokenFromCache(options);
+    if (tokenHolder) {
+        tokenHolder.counter--;
+        if (tokenHolder.counter < 1) {
+            let uri = options.url + '/rest/session';
 
-    let uri = options.url + '/rest/session';
+            request({
+                method: 'DELETE',
+                uri: uri
+            }, function (err, _, body) {
+                if (err) {
+                    if (cb) {
+                        cb(_createJsonErrorPayload("Session is being Destroyed", body, '401', '2A', 'Session Terminated', {
+                            err: err
+                        }));
+                        return;
+                    }
+                }
 
-    request({
-        method: 'DELETE',
-        uri: uri
-    }, function (err, response, body) {
-        if (err) {
+                if (cb) {
+                    deleteToken(options);
+                    cb(null, null);
+                }
+            });
+        } else {
+            // there are still requests using the token so we need to leave it alone
             if (cb) {
-                cb(_createJsonErrorPayload("Session is being Destroyed", body, '401', '2A', 'Session Terminated', {
-                    err: err
-                }));
-                return;
+                cb(null, null);
             }
         }
-
-        if (cb) {
-            cb(null, null);
-        }
-    });
+    } else {
+        Logger.warn('destroy was called on a token that did not exist in the cache, this should never happen');
+    }
 }
 
 
@@ -282,13 +350,13 @@ function validateOptions(userOptions, cb) {
 }
 
 function onMessage(payload, options, callback) {
-    Logger.trace('got options for post', {options: options});
+    Logger.trace('got options for post', { options: options });
 
     createToken(options, function (err, token) {
         if (err) {
             destroyToken(options, token);
             Logger.error('error getting token', { err: err });
-            callback({err: err});
+            callback({ err: err });
             return;
         }
 
@@ -304,13 +372,13 @@ function onMessage(payload, options, callback) {
             json: true
         };
 
-        Logger.trace({requestOptions: requestOptions});
+        Logger.trace({ requestOptions: requestOptions });
 
-        requestWithDefaults(requestOptions, (err, resp, body) => {
+        requestWithDefaults(options, requestOptions, (err, resp, body) => {
             if (err || resp.statusCode !== 200) {
                 destroyToken(options, token);
-                Logger.error('error posting note', { err: err, statusCode: resp.statusCode, requestOptions: requestOptions, payload: payload, body: body });
-                callback({ err: err, statusCode: resp.statusCode, body: body });
+                Logger.error('error posting note', { err: err, statusCode: resp ? resp.statusCode : "unknown", requestOptions: requestOptions, payload: payload, body: body });
+                callback({ err: err, statusCode: resp ? resp.statusCode : "unknown", body: body });
                 return;
             }
 
